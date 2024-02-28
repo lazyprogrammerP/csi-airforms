@@ -69,14 +69,14 @@ export async function POST(req: Request) {
         });
         break;
       case "user.deleted":
-        await Prisma.user.deleteMany({
+        await Prisma.user.delete({
           where: { clerkId: evt.data.id },
         });
         break;
     }
+
+    return new Response("", { status: 200 });
   } catch (error) {
     return Response.json({ error: `An error occured when syncing database with Clerk. For details refer to:\n${error}` });
   }
-
-  return new Response("", { status: 200 });
 }
