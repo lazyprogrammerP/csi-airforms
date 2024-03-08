@@ -31,6 +31,11 @@ enum QuestionType {
   LA
 }
 
+enum QuizAttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+}
+
 model User {
   id Int @id @default(autoincrement())
 
@@ -39,6 +44,7 @@ model User {
 
   quizzes     Quiz[]
   invitations QuizInvitation[]
+  attempts    QuizAttempt[]
 
   @@unique([clerkId, email])
 }
@@ -56,11 +62,13 @@ model Quiz {
 
   questions Question[]
 
+  attempts QuizAttempt[]
+
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAT DateTime @default(now())
+  updatedAT DateTime @updatedAt
 
   @@unique([title, userId])
 }
@@ -88,13 +96,16 @@ model Question {
 
   options Option[]
 
+  answers Answer[]
+
   awardableMarks Int
+  isRequired     Boolean
 
   quizId Int
   quiz   Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAT DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([question, quizId])
 }
@@ -108,5 +119,43 @@ model Option {
   questionId Int
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
+  answers Answer[]
+
   @@unique([content, questionId])
+}
+
+model QuizAttempt {
+  id Int @id @default(autoincrement())
+
+  answers Answer[]
+
+  status    QuizAttemptStatus @default(IN_PROGRESS)
+  startedAt DateTime          @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  quizId Int
+  quiz   Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quizId])
+}
+
+model Answer {
+  id Int @id @default(autoincrement())
+
+  selectedOptions Option[]
+  answeredContent String?
+
+  awardedMarks Int?
+
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  attemptId Int
+  attempt   QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([questionId, attemptId])
 }
