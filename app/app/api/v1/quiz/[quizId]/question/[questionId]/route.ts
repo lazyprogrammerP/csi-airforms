@@ -1,7 +1,7 @@
 import Exception from "@/lib/common/exception";
 import getAuthUser from "@/lib/middlewares/get-auth-user";
-import { CreateOrUpdateQuestionRequest } from "@/lib/types/request/[quizId]/question";
-import { CreateOrUpdateQuestionRequestValidator } from "@/lib/validators/request/[quizId]/question";
+import { CreateOrUpdateQuestionRequest } from "@/lib/types/request/quiz/[quizId]/question";
+import { CreateOrUpdateQuestionRequestValidator } from "@/lib/validators/request/quiz/[quizId]/question";
 import Prisma from "@/prisma";
 import { Option } from "@prisma/client";
 
@@ -61,6 +61,7 @@ export async function PUT(request: Request, { params }: { params: { quizId: stri
           question: payload.question,
           type: payload.type,
           awardableMarks: payload.awardableMarks,
+          isRequired: payload.isRequired,
           options: {
             upsert: payload.options.map((option) => ({
               where: { id: option.id },
@@ -68,7 +69,6 @@ export async function PUT(request: Request, { params }: { params: { quizId: stri
               create: { content: option.content, isCorrect: option.isCorrect },
             })),
           },
-          updatedAT: new Date(),
           quiz: {
             connect: {
               id: parseInt(params.quizId),

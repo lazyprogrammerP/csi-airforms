@@ -15,6 +15,7 @@ export const CreateOrUpdateQuestionRequestValidator = z
     ),
 
     awardableMarks: z.number(),
+    isRequired: z.boolean(),
   })
   .refine((schema) => {
     const numberOfOptions = schema.options.length;

@@ -27,7 +27,6 @@ export async function PUT(request: Request, { params }: { params: { quizId: stri
         instructions: payload.instructions,
         duration: payload.duration,
         visibility: payload.visibility,
-        updatedAT: new Date(),
         user: {
           connect: {
             id: user.id,

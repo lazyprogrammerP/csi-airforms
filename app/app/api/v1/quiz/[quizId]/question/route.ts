@@ -1,7 +1,7 @@
 import Exception from "@/lib/common/exception";
 import getAuthUser from "@/lib/middlewares/get-auth-user";
-import { CreateOrUpdateQuestionRequest } from "@/lib/types/request/[quizId]/question";
-import { CreateOrUpdateQuestionRequestValidator } from "@/lib/validators/request/[quizId]/question";
+import { CreateOrUpdateQuestionRequest } from "@/lib/types/request/quiz/[quizId]/question";
+import { CreateOrUpdateQuestionRequestValidator } from "@/lib/validators/request/quiz/[quizId]/question";
 import Prisma from "@/prisma";
 
 export async function GET(request: Request, { params }: { params: { quizId: string } }) {
@@ -52,6 +52,7 @@ export async function POST(request: Request, { params }: { params: { quizId: str
           },
         },
         awardableMarks: payload.awardableMarks,
+        isRequired: payload.isRequired,
         quiz: {
           connect: {
             id: parseInt(params.quizId),
